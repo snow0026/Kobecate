@@ -11,7 +11,7 @@
             --active-blue: #3a5a78; 
             --today-border: #ff9800; 
             --zoom-level: 1.25; 
-            --poop-important: #a67c52; /* 質感棕色 */
+            --poop-important: #a67c52; 
         }
         
         body { 
@@ -21,31 +21,29 @@
             zoom: var(--zoom-level); 
         }
         
-        /* 頂部導航 */
         .top-bar { padding: 12px 15px; background: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
         .logo-area { display: flex; align-items: center; gap: 10px; }
-        .logo-img { width: 42px; height: 42px; object-fit: cover; border-radius: 50%; }
+        .logo-img { width: 42px; height: 42px; object-fit: cover; border-radius: 50%; border: 1px solid #eee; }
         .main-title { font-size: 1rem; font-weight: bold; color: #333; }
 
         .view-switcher { background: #eee; border-radius: 20px; padding: 3px; display: flex; }
         .view-btn { border: none; padding: 6px 15px; border-radius: 177px; cursor: pointer; font-size: 0.85rem; background: transparent; }
         .view-btn.active { background: #333; color: white; }
 
-        /* 週記錄導航 */
-        .week-nav-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 10px 0 10px; background: #f0f2f5; }
-        .week-nav-bar button { background: #e0e0e0; border: none; padding: 5px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; cursor: pointer; color: #555; }
-        .week-info-tag { font-size: 0.85rem; font-weight: bold; color: #666; }
+        .week-nav-bar { display: flex; justify-content: center; align-items: center; gap: 15px; padding: 15px 10px 5px 10px; background: #f0f2f5; }
+        .week-nav-bar button { background: #e0e0e0; border: none; padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; cursor: pointer; color: #555; white-space: nowrap; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 
-        .week-wrapper { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 10px; background-color: #f0f2f5; }
-        .day-card { background: white; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); border: 2px solid transparent; display: flex; flex-direction: column; overflow: hidden; }
+        .week-wrapper { display: flex; flex-direction: column; gap: 12px; padding: 10px; background-color: #f0f2f5; }
+        .day-card { background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 2px solid transparent; display: flex; flex-direction: column; width: 100%; overflow: hidden; }
         .day-card.is-today { border-color: var(--today-border); background: #fffcf5; }
-        .day-label { padding: 5px; text-align: center; font-weight: bold; font-size: 0.75rem; background: #fafafa; border-bottom: 1px solid #eee; }
-        .session { padding: 6px; }
+        
+        .day-label { padding: 8px; text-align: center; font-weight: bold; font-size: 0.8rem; background: #fafafa; border-bottom: 1px solid #eee; color: #444; }
+        .session { padding: 8px; }
         .morning { background-color: var(--morning-bg); border-bottom: 1px dashed #eee; }
         .evening { background-color: var(--evening-bg); }
         
-        .items-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; }
-        .item { padding: 6px 0; border-radius: 4px; font-size: 0.6rem; text-align: center; color: #999; border: 1.5px solid #ddd; background: white; cursor: pointer; white-space: nowrap; overflow: hidden; }
+        .items-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+        .item { padding: 10px 0; border-radius: 6px; font-size: 0.7rem; text-align: center; color: #999; border: 1.5px solid #ddd; background: white; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .item.active { color: white !important; background-color: var(--active-blue) !important; border-color: var(--active-blue) !important; font-weight: bold; }
         .item.active.poop-active { background-color: var(--poop-important) !important; border-color: var(--poop-important) !important; }
 
@@ -55,17 +53,15 @@
         .month-nav button { background: #f0f0f0; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: bold; }
         .month-grid { display: grid; grid-template-columns: repeat(7, 1fr); border: 1px solid #ccc; background-color: #ccc; gap: 1px; }
         .weekday-label { background: #f8f9fa; text-align: center; padding: 8px 0; font-weight: bold; font-size: 0.85rem; }
-        .month-cell { background: white; min-height: 110px; display: flex; flex-direction: column; border: none; }
+        .month-cell { background: white; min-height: 110px; display: flex; flex-direction: column; }
         .month-date-num { font-size: 0.75rem; padding: 4px; font-weight: bold; }
         .m-session { flex: 1; padding: 2px 4px; display: flex; align-items: flex-start; border-top: 1px solid #f0f0f0; }
         .m-am { background-color: #fffef2; }
         .m-pm { background-color: #f7faff; }
         .m-indicator-group { display: flex; flex-wrap: wrap; gap: 3px; align-items: center; }
-
         .red-circle { color: #d32f2f; border: 1.2px solid #d32f2f; border-radius: 50%; width: 17px; height: 17px; font-size: 0.6rem; display: flex; align-items: center; justify-content: center; font-weight: bold; background: white; }
         .m-poop-important-box { color: var(--poop-important); border: 1.2px solid var(--poop-important); background: white; padding: 0 4px; border-radius: 4px; font-size: 0.6rem; font-weight: bold; height: 17px; display: flex; align-items: center; white-space: nowrap; gap: 1px; }
 
-        /* 彈窗 */
         #modalOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 200; justify-content: center; align-items: center; }
         .modal { background: white; padding: 20px; border-radius: 15px; width: 85%; max-width: 320px; }
         .option-btn { width: 100%; padding: 14px; margin: 6px 0; border: 1px solid #ddd; border-radius: 10px; cursor: pointer; font-size: 1rem; }
@@ -85,11 +81,8 @@
 </div>
 
 <div id="weekControlBar" class="week-nav-bar">
-    <div style="display:flex; gap:5px;">
-        <button onclick="changeWeek(-7)">◀ 前一週</button>
-        <button onclick="resetToToday()" style="background: var(--today-border); color: white;">今天</button>
-    </div>
-    <div class="week-info-tag" id="weekDateRange">本週紀錄</div>
+    <button onclick="changeWeek(-7)">◀ 前一週</button>
+    <button onclick="resetToToday()" style="background: var(--today-border); color: white;">今天</button>
     <button onclick="changeWeek(7)">下一週 ▶</button>
 </div>
 
@@ -98,7 +91,7 @@
 <div id="monthViewContainer" class="month-view-container">
     <div class="month-nav">
         <button onclick="changeMonth(-1)">◀ 上個月</button>
-        <div id="monthDisplayTitle" class="month-title">2026 年 1 月</div>
+        <div id="monthDisplayTitle" class="month-title"></div>
         <button onclick="changeMonth(1)">下個月 ▶</button>
     </div>
     <div class="month-grid" id="monthGrid"></div>
@@ -126,7 +119,6 @@
     let displayYear = new Date().getFullYear();
     let displayMonth = new Date().getMonth();
 
-    // 初始化：先讀本機再讀雲端
     async function init() {
         db = JSON.parse(localStorage.getItem('catLogs_v20')) || {};
         renderWeekView();
@@ -142,40 +134,34 @@
                 renderMonthGrid();
                 console.log("雲端同步成功");
             }
-        } catch (e) { console.log("雲端連線失敗，使用本機快取"); }
+        } catch (e) { console.log("使用快取中"); }
     }
 
-    // 儲存：先存本機再傳雲端
     async function saveDB() {
         localStorage.setItem('catLogs_v20', JSON.stringify(db));
         renderWeekView();
         renderMonthGrid();
-
         try {
-            await fetch(G_SCRIPT_URL, {
-                method: 'POST',
-                body: JSON.stringify(db)
-            });
-            console.log("雲端儲存成功");
-        } catch (e) { console.error("雲端儲存失敗"); }
+            await fetch(G_SCRIPT_URL, { method: 'POST', body: JSON.stringify(db) });
+        } catch (e) { console.error("雲端存儲失敗"); }
     }
 
     function switchView(view) {
         const isWeek = view === 'week';
         document.querySelectorAll('.view-btn').forEach(b => b.classList.toggle('active', (isWeek && b.innerText==='週') || (!isWeek && b.innerText==='月')));
-        document.getElementById('weekWrapper').style.display = isWeek ? 'grid' : 'none';
+        document.getElementById('weekWrapper').style.display = isWeek ? 'flex' : 'none';
         document.getElementById('weekControlBar').style.display = isWeek ? 'flex' : 'none';
         document.getElementById('monthViewContainer').style.display = isWeek ? 'none' : 'block';
         if(!isWeek) renderMonthGrid();
     }
 
     function changeWeek(days) { baseViewDate.setDate(baseViewDate.getDate() + days); renderWeekView(); }
-    function resetToToday() { baseViewDate = new Date(); displayYear = new Date().getFullYear(); displayMonth = new Date().getMonth(); switchView('week'); init(); }
+    function resetToToday() { baseViewDate = new Date(); displayYear = new Date().getFullYear(); displayMonth = new Date().getMonth(); init(); }
 
     function renderWeekView() {
         const container = document.getElementById('weekWrapper');
         container.innerHTML = '';
-        const offsets = [-4, -2, -1, -3, 0, 1];
+        const offsets = [0, -1, -2, -3, -4]; // 今天排最上面
         const realTodayStr = new Date().toDateString();
 
         offsets.forEach(offset => {
@@ -193,10 +179,6 @@
             `;
             container.appendChild(card);
         });
-
-        const rangeStart = new Date(baseViewDate); rangeStart.setDate(baseViewDate.getDate() - 4);
-        const rangeEnd = new Date(baseViewDate); rangeEnd.setDate(baseViewDate.getDate() + 1);
-        document.getElementById('weekDateRange').innerText = `${rangeStart.getMonth()+1}/${rangeStart.getDate()} - ${rangeEnd.getMonth()+1}/${rangeEnd.getDate()}`;
     }
 
     function renderItemsHTML(dateKey, time) {
@@ -214,14 +196,7 @@
                     specialClass = "poop-active";
                 }
             }
-
-            html += `<div>
-                <div class="item ${saved && saved.active ? 'active' : ''} ${specialClass}" 
-                     onclick="handleSingleClick(this, '${id}', '${text}')" 
-                     ondblclick="handleDoubleClick(this, '${id}')">
-                     ${display}
-                </div>
-            </div>`;
+            html += `<div><div class="item ${saved && saved.active ? 'active' : ''} ${specialClass}" onclick="handleSingleClick(this, '${id}', '${text}')" ondblclick="handleDoubleClick(this, '${id}')">${display}</div></div>`;
         });
         return html + `</div>`;
     }
@@ -230,7 +205,8 @@
 
     function renderMonthGrid() {
         const grid = document.getElementById('monthGrid');
-        document.getElementById('monthDisplayTitle').innerText = `${displayYear} 年 ${displayMonth + 1} 月`;
+        const title = document.getElementById('monthDisplayTitle');
+        if(title) title.innerText = `${displayYear} 年 ${displayMonth + 1} 月`;
         grid.innerHTML = '';
         ['日','一','二','三','四','五','六'].forEach(w => grid.innerHTML += `<div class="weekday-label">${w}</div>`);
         const firstDay = new Date(displayYear, displayMonth, 1).getDay();
@@ -250,20 +226,13 @@
     function getSingleSessionHTML(dateKey, time) {
         let html = '<div class="m-indicator-group">';
         const poopKey = `${dateKey}-${time}-大便`; 
-        if(db[poopKey] && db[poopKey].active) {
-            html += `<div class="m-poop-important-box">💩${db[poopKey].detail || "💩"}</div>`;
-        }
+        if(db[poopKey] && db[poopKey].active) html += `<div class="m-poop-important-box">💩${db[poopKey].detail || "💩"}</div>`;
         const circleItems = ["中", "西", "酵", "魚油"]; 
         circleItems.forEach(it => { if(db[`${dateKey}-${time}-${it}`] && db[`${dateKey}-${time}-${it}`].active) html += `<span class="red-circle">${it}</span>`; });
         return html + '</div>';
     }
 
-    function handleSingleClick(el, id, type) { 
-        if (!el.classList.contains('active')) { 
-            if (config[type]) { currentEditingKey = { id, type }; openModal(type); } 
-            else { db[id] = { active: true }; saveDB(); } 
-        } 
-    }
+    function handleSingleClick(el, id, type) { if (!el.classList.contains('active')) { if (config[type]) { currentEditingKey = { id, type }; openModal(type); } else { db[id] = { active: true }; saveDB(); } } }
     function handleDoubleClick(el, id) { if (el.classList.contains('active')) { delete db[id]; saveDB(); } }
     function openModal(type) { 
         document.getElementById('modalTitle').innerText = `${type}`; 
@@ -294,4 +263,3 @@
 </script>
 </body>
 </html>
-
