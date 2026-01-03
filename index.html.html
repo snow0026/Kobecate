@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小胖子的紀錄</title>
+    <style>
+        :root { 
+            --morning-bg: #fffdeb; 
+            --evening-bg: #f0f4f8; 
+            --active-blue: #3a5a78; 
+            --today-border: #ff9800; 
+            --zoom-level: 1.25; 
+            --poop-important: #a67c52; /* 質感棕色 */
+        }
+        
+        body { 
+            font-family: '微軟正黑體', sans-serif; 
+            background-color: #f0f2f5; 
+            margin: 0; padding: 0; 
+            zoom: var(--zoom-level); 
+        }
+        
+        /* 頂部導航 */
+        .top-bar { padding: 12px 15px; background: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        .logo-area { display: flex; align-items: center; gap: 10px; }
+        .logo-img { width: 42px; height: 42px; object-fit: cover; border-radius: 50%; border: 1px solid #eee; }
+        .main-title { font-size: 1rem; font-weight: bold; color: #333; }
+
+        .view-switcher { background: #eee; border-radius: 20px; padding: 3px; display: flex; }
+        .view-btn { border: none; padding: 6px 15px; border-radius: 177px; cursor: pointer; font-size: 0.85rem; background: transparent; }
+        .view-btn.active { background: #333; color: white; }
+
+        /* 週記錄導航 */
+        .week-nav-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 10px 0 10px; background: #f0f2f5; }
+        .week-nav-bar button { background: #e0e0e0; border: none; padding: 5px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; cursor: pointer; color: #555; }
+        .week-info-tag { font-size: 0.85rem; font-weight: bold; color: #666; }
+
+        .week-wrapper { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 10px; background-color: #f0f2f5; }
+        .day-card { background: white; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); border: 2px solid transparent; display: flex; flex-direction: column; overflow: hidden; }
+        .day-card.is-today { border-color: var(--today-border); background: #fffcf5; }
+        .day-label { padding: 5px; text-align: center; font-weight: bold; font-size: 0.75rem; background: #fafafa; border-bottom: 1px solid #eee; }
+        .session { padding: 6px; }
+        .morning { background-color: var(--morning-bg); border-bottom: 1px dashed #eee; }
+        .evening { background-color: var(--evening-bg); }
+        
+        .items-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; }
+        .item { padding: 6px 0; border-radius: 4px; font-size: 0.6rem; text-align: center; color: #999; border: 1.5px solid #ddd; background: white; cursor: pointer; white-space: nowrap; overflow: hidden; }
+        .item.active { color: white !important; background-color: var(--active-blue) !important; border-color: var(--active-blue) !important; font-weight: bold; }
+        .item.active.poop-active { background-color: var(--poop-important) !important; border-color: var(--poop-important) !important; }
+
+        /* 月檢視 */
+        .month-view-container { display: none; background: #fff; min-height: 100vh; }
+        .month-nav { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #fff; border-bottom: 1px solid #eee; }
+        .month-nav button { background: #f0f0f0; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: bold; }
+        .month-grid { display: grid; grid-template-columns: repeat(7, 1fr); border: 1px solid #ccc; background-color: #ccc; gap: 1px; }
+        .weekday-label { background: #f8f9fa; text-align: center; padding: 8px 0; font-weight: bold; font-size: 0.85rem; }
+        .month-cell { background: white; min-height: 110px; display: flex; flex-direction: column; border: none; }
+        .month-date-num { font-size: 0.75rem; padding: 4px; font-weight: bold; }
+        .m-session { flex: 1; padding: 2px 4px; display: flex; align-items: flex-start; border-top: 1px solid #f0f0f0; }
+        .m-am { background-color: #fffef2; }
+        .m-pm { background-color: #f7faff; }
+        .m-indicator-group { display: flex; flex-wrap: wrap; gap: 3px; align-items: center; }
+
+        .red-circle { color: #d32f2f; border: 1.2px solid #d32f2f; border-radius: 50%; width: 17px; height: 17px; font-size: 0.6rem; display: flex; align-items: center; justify-content: center; font-weight: bold; background: white; }
+        .m-poop-important-box { color: var(--poop-important); border: 1.2px solid var(--poop-important); background: white; padding: 0 4px; border-radius: 4px; font-size: 0.6rem; font-weight: bold; height: 17px; display: flex; align-items: center; white-space: nowrap; gap: 1px; }
+
+        /* 彈窗 */
+        #modalOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 200; justify-content: center; align-items: center; }
+        .modal { background: white; padding: 20px; border-radius: 15px; width: 85%; max-width: 320px; }
+        .option-btn { width: 100%; padding: 14px; margin: 6px 0; border: 1px solid #ddd; border-radius: 10px; cursor: pointer; font-size: 1rem; }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <div class="logo-area">
+        <img src="kobe.png" alt="Logo" class="logo-img">
+        <div class="main-title">小胖子每日紀錄</div>
+    </div>
+    <div class="view-switcher">
+        <button class="view-btn active" onclick="switchView('week')">週</button>
+        <button class="view-btn" onclick="switchView('month')">月</button>
+    </div>
+</div>
+
+<div id="weekControlBar" class="week-nav-bar">
+    <div style="display:flex; gap:5px;">
+        <button onclick="changeWeek(-7)">◀ 前一週</button>
+        <button onclick="resetToToday()" style="background: var(--today-border); color: white;">今天</button>
+    </div>
+    <div class="week-info-tag" id="weekDateRange">本週紀錄</div>
+    <button onclick="changeWeek(7)">下一週 ▶</button>
+</div>
+
+<div id="weekWrapper" class="week-wrapper"></div>
+
+<div id="monthViewContainer" class="month-view-container">
+    <div class="month-nav">
+        <button onclick="changeMonth(-1)">◀ 上個月</button>
+        <div id="monthDisplayTitle" class="month-title">2026 年 1 月</div>
+        <button onclick="changeMonth(1)">下個月 ▶</button>
+    </div>
+    <div class="month-grid" id="monthGrid"></div>
+</div>
+
+<div id="modalOverlay">
+    <div class="modal">
+        <h3 id="modalTitle" style="margin-top:0;">紀錄細節</h3>
+        <div id="modalOptions"></div>
+        <div style="display:flex; gap:8px; margin-top:15px;">
+            <input type="text" id="customInput" placeholder="自填..." style="flex:1; padding:12px; border-radius:8px; border:1px solid #ccc; font-size:1rem;">
+            <button onclick="saveCustom()" style="background:#333; color:white; border:none; padding:12px 18px; border-radius:8px;">OK</button>
+        </div>
+        <button onclick="closeModal()" style="width:100%; margin-top:20px; border:none; background:none; color:#999;">取消關閉</button>
+    </div>
+</div>
+
+<script>
+    const G_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzZ3FuT28lRM72gHABNSnxZcJxA6AsdXRQT-J7PQG7ckBLfpPB3EsfXKKX5qC6OSdlqew/exec';
+    const baseItems = ["中", "西", "罐頭", "酵", "大便", "化毛", "魚油", "南瓜"];
+    const config = { "大便": ["木乃伊大便", "一顆拇指大", "一個指節", "超多"], "罐頭": ["AB饗", "真野", "蜂王乳", "惜時", "爵士", "喵探"] };
+    
+    let db = {};
+    let baseViewDate = new Date(); 
+    let displayYear = new Date().getFullYear();
+    let displayMonth = new Date().getMonth();
+
+    // 初始化：先讀本機再讀雲端
+    async function init() {
+        db = JSON.parse(localStorage.getItem('catLogs_v20')) || {};
+        renderWeekView();
+        renderMonthGrid();
+
+        try {
+            const response = await fetch(G_SCRIPT_URL);
+            const cloudData = await response.json();
+            if (cloudData && Object.keys(cloudData).length > 0) {
+                db = cloudData;
+                localStorage.setItem('catLogs_v20', JSON.stringify(db));
+                renderWeekView();
+                renderMonthGrid();
+                console.log("雲端同步成功");
+            }
+        } catch (e) { console.log("雲端連線失敗，使用本機快取"); }
+    }
+
+    // 儲存：先存本機再傳雲端
+    async function saveDB() {
+        localStorage.setItem('catLogs_v20', JSON.stringify(db));
+        renderWeekView();
+        renderMonthGrid();
+
+        try {
+            await fetch(G_SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify(db)
+            });
+            console.log("雲端儲存成功");
+        } catch (e) { console.error("雲端儲存失敗"); }
+    }
+
+    function switchView(view) {
+        const isWeek = view === 'week';
+        document.querySelectorAll('.view-btn').forEach(b => b.classList.toggle('active', (isWeek && b.innerText==='週') || (!isWeek && b.innerText==='月')));
+        document.getElementById('weekWrapper').style.display = isWeek ? 'grid' : 'none';
+        document.getElementById('weekControlBar').style.display = isWeek ? 'flex' : 'none';
+        document.getElementById('monthViewContainer').style.display = isWeek ? 'none' : 'block';
+        if(!isWeek) renderMonthGrid();
+    }
+
+    function changeWeek(days) { baseViewDate.setDate(baseViewDate.getDate() + days); renderWeekView(); }
+    function resetToToday() { baseViewDate = new Date(); displayYear = new Date().getFullYear(); displayMonth = new Date().getMonth(); switchView('week'); init(); }
+
+    function renderWeekView() {
+        const container = document.getElementById('weekWrapper');
+        container.innerHTML = '';
+        const offsets = [-4, -2, -1, -3, 0, 1];
+        const realTodayStr = new Date().toDateString();
+
+        offsets.forEach(offset => {
+            const date = new Date(baseViewDate);
+            date.setDate(baseViewDate.getDate() + offset);
+            const dateKey = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+            const isRealToday = date.toDateString() === realTodayStr;
+            
+            const card = document.createElement('div');
+            card.className = `day-card ${isRealToday ? 'is-today' : ''}`;
+            card.innerHTML = `
+                <div class="day-label">${date.getMonth()+1}/${date.getDate()} (${['日','一','二','三','四','五','六'][date.getDay()]})</div>
+                <div class="session morning">${renderItemsHTML(dateKey, 'AM')}</div>
+                <div class="session evening">${renderItemsHTML(dateKey, 'PM')}</div>
+            `;
+            container.appendChild(card);
+        });
+
+        const rangeStart = new Date(baseViewDate); rangeStart.setDate(baseViewDate.getDate() - 4);
+        const rangeEnd = new Date(baseViewDate); rangeEnd.setDate(baseViewDate.getDate() + 1);
+        document.getElementById('weekDateRange').innerText = `${rangeStart.getMonth()+1}/${rangeStart.getDate()} - ${rangeEnd.getMonth()+1}/${rangeEnd.getDate()}`;
+    }
+
+    function renderItemsHTML(dateKey, time) {
+        let html = `<div class="items-grid">`;
+        baseItems.forEach(text => {
+            const id = `${dateKey}-${time}-${text}`;
+            const saved = db[id];
+            let display = text;
+            let specialClass = "";
+
+            if (saved && saved.active) {
+                if (text === "罐頭" && saved.val) display = saved.val;
+                else if (text === "大便") {
+                    display = saved.detail || text;
+                    specialClass = "poop-active";
+                }
+            }
+
+            html += `<div>
+                <div class="item ${saved && saved.active ? 'active' : ''} ${specialClass}" 
+                     onclick="handleSingleClick(this, '${id}', '${text}')" 
+                     ondblclick="handleDoubleClick(this, '${id}')">
+                     ${display}
+                </div>
+            </div>`;
+        });
+        return html + `</div>`;
+    }
+
+    function changeMonth(delta) { displayMonth += delta; if (displayMonth > 11) { displayMonth = 0; displayYear++; } if (displayMonth < 0) { displayMonth = 11; displayYear--; } renderMonthGrid(); }
+
+    function renderMonthGrid() {
+        const grid = document.getElementById('monthGrid');
+        document.getElementById('monthDisplayTitle').innerText = `${displayYear} 年 ${displayMonth + 1} 月`;
+        grid.innerHTML = '';
+        ['日','一','二','三','四','五','六'].forEach(w => grid.innerHTML += `<div class="weekday-label">${w}</div>`);
+        const firstDay = new Date(displayYear, displayMonth, 1).getDay();
+        const daysInMonth = new Date(displayYear, displayMonth + 1, 0).getDate();
+        for(let i=0; i<firstDay; i++) grid.innerHTML += '<div class="month-cell" style="background:#f5f5f5"></div>';
+        for(let d=1; d<=daysInMonth; d++) {
+            const dateKey = `${displayYear}-${String(displayMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+            grid.innerHTML += `
+                <div class="month-cell">
+                    <div class="month-date-num">${d}</div>
+                    <div class="m-session m-am">${getSingleSessionHTML(dateKey, 'AM')}</div>
+                    <div class="m-session m-pm">${getSingleSessionHTML(dateKey, 'PM')}</div>
+                </div>`;
+        }
+    }
+
+    function getSingleSessionHTML(dateKey, time) {
+        let html = '<div class="m-indicator-group">';
+        const poopKey = `${dateKey}-${time}-大便`; 
+        if(db[poopKey] && db[poopKey].active) {
+            html += `<div class="m-poop-important-box">💩${db[poopKey].detail || "💩"}</div>`;
+        }
+        const circleItems = ["中", "西", "酵", "魚油"]; 
+        circleItems.forEach(it => { if(db[`${dateKey}-${time}-${it}`] && db[`${dateKey}-${time}-${it}`].active) html += `<span class="red-circle">${it}</span>`; });
+        return html + '</div>';
+    }
+
+    function handleSingleClick(el, id, type) { 
+        if (!el.classList.contains('active')) { 
+            if (config[type]) { currentEditingKey = { id, type }; openModal(type); } 
+            else { db[id] = { active: true }; saveDB(); } 
+        } 
+    }
+    function handleDoubleClick(el, id) { if (el.classList.contains('active')) { delete db[id]; saveDB(); } }
+    function openModal(type) { 
+        document.getElementById('modalTitle').innerText = `${type}`; 
+        const box = document.getElementById('modalOptions'); 
+        box.innerHTML = ''; 
+        config[type].forEach(opt => { 
+            const btn = document.createElement('button'); 
+            btn.className = 'option-btn'; 
+            btn.innerText = opt; 
+            btn.onclick = () => finishEdit(opt); 
+            box.appendChild(btn); 
+        }); 
+        document.getElementById('modalOverlay').style.display = 'flex'; 
+    }
+    function saveCustom() { const v = document.getElementById('customInput').value; if(v) finishEdit(v); }
+    function finishEdit(val) { 
+        const { id, type } = currentEditingKey; 
+        db[id] = { active: true }; 
+        if (type === "罐頭") db[id].val = val; 
+        if (type === "大便") db[id].detail = val; 
+        saveDB(); 
+        closeModal(); 
+        document.getElementById('customInput').value = '';
+    }
+    function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; }
+
+    init();
+</script>
+</body>
+</html>
