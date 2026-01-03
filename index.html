@@ -60,7 +60,6 @@
         .m-pm { background-color: #f7faff; }
         .m-indicator-group { display: flex; flex-wrap: wrap; gap: 3px; align-items: center; }
         .red-circle { color: #d32f2f; border: 1.2px solid #d32f2f; border-radius: 50%; width: 17px; height: 17px; font-size: 0.6rem; display: flex; align-items: center; justify-content: center; font-weight: bold; background: white; }
-        .m-poop-important-box { color: var(--poop-important); border: 1.2px solid var(--poop-important); background: white; padding: 0 4px; border-radius: 4px; font-size: 0.6rem; font-weight: bold; height: 17px; display: flex; align-items: center; white-space: nowrap; gap: 1px; }
 
         #modalOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 200; justify-content: center; align-items: center; }
         .modal { background: white; padding: 20px; border-radius: 15px; width: 85%; max-width: 320px; }
@@ -226,9 +225,7 @@
     function getSingleSessionHTML(dateKey, time) {
         let html = '<div class="m-indicator-group">';
         const poopKey = `${dateKey}-${time}-大便`; 
-        if(db[poopKey] && db[poopKey].active) html += `<div class="m-poop-important-box">💩${db[poopKey].detail || "💩"}</div>`;
-        const circleItems = ["中", "西", "酵", "魚油"]; 
-        circleItems.forEach(it => { if(db[`${dateKey}-${time}-${it}`] && db[`${dateKey}-${time}-${it}`].active) html += `<span class="red-circle">${it}</span>`; });
+        if(db[poopKey] && db[poopKey].active) html += `💩`;
         return html + '</div>';
     }
 
