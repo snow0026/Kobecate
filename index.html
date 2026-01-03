@@ -160,7 +160,7 @@
     function renderWeekView() {
         const container = document.getElementById('weekWrapper');
         container.innerHTML = '';
-        const offsets = [0, -1, -2, -3, -4]; // 今天排最上面
+        const offsets = [0, -1, -2, -3, -4, -5, -6]; // 今天排最上面
         const realTodayStr = new Date().toDateString();
 
         offsets.forEach(offset => {
@@ -260,3 +260,4 @@
 </script>
 </body>
 </html>
+
