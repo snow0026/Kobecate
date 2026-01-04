@@ -90,7 +90,7 @@
 <div id="monthViewContainer" class="month-view-container">
     <div class="month-nav">
         <button onclick="changeMonth(-1)">◀ 上個月</button>
-        <div id="monthDisplayTitle" class="month-title"></div>
+        <div class="main-title">💩月大便紀錄表💩</div>
         <button onclick="changeMonth(1)">下個月 ▶</button>
     </div>
     <div class="month-grid" id="monthGrid"></div>
@@ -160,7 +160,7 @@
     function renderWeekView() {
         const container = document.getElementById('weekWrapper');
         container.innerHTML = '';
-        const offsets = [0, -1, -2, -3, -4, -5, -6]; // 今天排最上面
+        const offsets = [0, -1, -2, -3, -4,-5]; // 今天排最上面
         const realTodayStr = new Date().toDateString();
 
         offsets.forEach(offset => {
@@ -173,8 +173,8 @@
             card.className = `day-card ${isRealToday ? 'is-today' : ''}`;
             card.innerHTML = `
                 <div class="day-label">${date.getMonth()+1}/${date.getDate()} (${['日','一','二','三','四','五','六'][date.getDay()]})</div>
-                <div class="session morning">${renderItemsHTML(dateKey, 'AM')}</div>
-                <div class="session evening">${renderItemsHTML(dateKey, 'PM')}</div>
+                <div class="session morning">☀️${renderItemsHTML(dateKey, 'AM')}</div>
+                <div class="session evening">🌙${renderItemsHTML(dateKey, 'PM')}</div>
             `;
             container.appendChild(card);
         });
@@ -260,4 +260,3 @@
 </script>
 </body>
 </html>
-
