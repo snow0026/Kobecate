@@ -61,9 +61,53 @@
         .m-indicator-group { display: flex; flex-wrap: wrap; gap: 3px; align-items: center; }
         .red-circle { color: #d32f2f; border: 1.2px solid #d32f2f; border-radius: 50%; width: 17px; height: 17px; font-size: 0.6rem; display: flex; align-items: center; justify-content: center; font-weight: bold; background: white; }
 
+        .option-item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 8px 12px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    background: white;
+    cursor: pointer;
+    box-sizing: border-box;
+    position: relative;
+    left: 0;
+}
+
+.option-img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-right: 15px;
+}
+
+.option-text {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #333;
+}
+#modalOptions + div {
+    display: flex;
+    gap: 8px;
+    margin-top: 15px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#customInput {
+    flex: 1;
+    min-width: 0; /* 防止 input 撐破 Flex 容器 */
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+}
         #modalOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 200; justify-content: center; align-items: center; }
-        .modal { background: white; padding: 20px; border-radius: 15px; width: 85%; max-width: 320px; }
-        .option-btn { width: 100%; padding: 14px; margin: 6px 0; border: 1px solid #ddd; border-radius: 10px; cursor: pointer; font-size: 1rem; }
+        .modal { background: white; padding: 20px; border-radius: 15px; width: 88%; max-width: 320px;max-height: 85vh;overflow-y: auto;box-sizing: border-box; }
+        .option-btn {min-width: 0; width: 100%; padding: 14px; margin: 6px 0; border: 1px solid #ddd; border-radius: 10px; cursor: pointer; font-size: 1rem; }
     </style>
 </head>
 <body>
@@ -90,7 +134,7 @@
 <div id="monthViewContainer" class="month-view-container">
     <div class="month-nav">
         <button onclick="changeMonth(-1)">◀ 上個月</button>
-        <div class="main-title">💩月大便紀錄表💩</div>
+        <div class="main-title" id="monthDisplayTitle"></div>        
         <button onclick="changeMonth(1)">下個月 ▶</button>
     </div>
     <div class="month-grid" id="monthGrid"></div>
@@ -111,7 +155,14 @@
 <script>
     const G_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzZ3FuT28lRM72gHABNSnxZcJxA6AsdXRQT-J7PQG7ckBLfpPB3EsfXKKX5qC6OSdlqew/exec';
     const baseItems = ["中", "西", "罐頭", "酵", "大便", "化毛", "魚油", "南瓜"];
-    const config = { "大便": ["木乃伊大便", "一顆拇指大", "一個指節", "超多"], "罐頭": ["AB饗", "真野", "蜂王乳", "惜時", "爵士", "喵探"] };
+    const config = { "大便": ["木乃伊大便", "一顆拇指大", "一個指節", "超多"], "罐頭": [
+        { name: "AB饗", img: "ab.png" },
+        { name: "真野", img: "maonuo.png" },
+        { name: "蜂王乳", img: "royal.png" },
+        { name: "惜時", img: "seeds.png" },
+        { name: "爵士", img: "jazz.png" },
+        { name: "喵探", img: "meow.png" }
+    ] };
     
     let db = {};
     let baseViewDate = new Date(); 
@@ -205,7 +256,7 @@
     function renderMonthGrid() {
         const grid = document.getElementById('monthGrid');
         const title = document.getElementById('monthDisplayTitle');
-        if(title) title.innerText = `${displayYear} 年 ${displayMonth + 1} 月`;
+        if(title) title.innerText = `${displayYear} 年 ${displayMonth + 1}月 `;
         grid.innerHTML = '';
         ['日','一','二','三','四','五','六'].forEach(w => grid.innerHTML += `<div class="weekday-label">${w}</div>`);
         const firstDay = new Date(displayYear, displayMonth, 1).getDay();
@@ -232,18 +283,32 @@
     function handleSingleClick(el, id, type) { if (!el.classList.contains('active')) { if (config[type]) { currentEditingKey = { id, type }; openModal(type); } else { db[id] = { active: true }; saveDB(); } } }
     function handleDoubleClick(el, id) { if (el.classList.contains('active')) { delete db[id]; saveDB(); } }
     function openModal(type) { 
-        document.getElementById('modalTitle').innerText = `${type}`; 
-        const box = document.getElementById('modalOptions'); 
-        box.innerHTML = ''; 
-        config[type].forEach(opt => { 
-            const btn = document.createElement('button'); 
-            btn.className = 'option-btn'; 
-            btn.innerText = opt; 
+    document.getElementById('modalTitle').innerText = `${type}`; 
+    const box = document.getElementById('modalOptions'); 
+    box.innerHTML = ''; 
+    
+    const options = config[type];
+    
+    options.forEach(opt => { 
+        const btn = document.createElement('div'); // 改用 div 製作複雜按鈕
+        btn.className = 'option-item'; 
+        
+        // 如果是罐頭，加入圖片結構
+        if (type === "罐頭") {
+            btn.innerHTML = `
+                <img src="${opt.img}" class="option-img" onerror="this.style.display='none'">
+                <span class="option-text">${opt.name}</span>
+            `;
+            btn.onclick = () => finishEdit(opt.name); 
+        } else {
+            // 大便等文字選項保持原樣
+            btn.innerHTML = `<span class="option-text">${opt}</span>`;
             btn.onclick = () => finishEdit(opt); 
-            box.appendChild(btn); 
-        }); 
-        document.getElementById('modalOverlay').style.display = 'flex'; 
-    }
+        }
+        box.appendChild(btn); 
+    }); 
+    document.getElementById('modalOverlay').style.display = 'flex'; 
+}
     function saveCustom() { const v = document.getElementById('customInput').value; if(v) finishEdit(v); }
     function finishEdit(val) { 
         const { id, type } = currentEditingKey; 
